@@ -1,0 +1,148 @@
+{% extends 'include/homepage.html' %}
+{% load static %}
+{% block content %}
+
+{% include 'include/header.html' %}
+
+<div class="navbar navbar-default yamm" role="navigation" id="navbar">
+    <div class="container">
+        <div class="navbar-header">
+
+            <a class="navbar-brand home" href="{% url 'home_url' %}" data-animate-hover="bounce">
+                <img hight = 20px; src="{% static 'img/logo.png' %}" alt="Obaju logo" class="hidden-xs">
+                <img src="{% static 'img/logo-small.png' %}" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
+            </a>
+            <div class="navbar-buttons">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-align-justify"></i>
+                </button>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#search">
+                    <span class="sr-only">Toggle search</span>
+                    <i class="fa fa-search"></i>
+                </button>
+                <a class="btn btn-default navbar-toggle" href="basket.html">
+                    <i class="fa fa-shopping-cart"></i><span class="hidden-xs">{{carts.count}}</span>
+                </a>
+            </div>
+        </div>
+        <!--/.navbar-header -->
+
+        <div class="navbar-collapse collapse" id="navigation">
+
+            <ul class="nav navbar-nav navbar-left">
+                <li class="active"><a href="{% url 'home_url' %}">Главная страница</a>
+                </li>
+                <li><a href="{% url 'category_url' %}">Категории/
+                    Теги
+                </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'my_products_url' %}">Мои товары</a>
+                </li>
+                {% endif %}
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+
+        <div class="navbar-buttons">
+            {% if user.is_authenticated %}
+            <div class="navbar-collapse collapse right" id="basket-overview">
+                <a href="{% url 'wishlist_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-heart"></i></a>
+                <a href="{% url 'my_orders_url' %}" class="btn btn-primary navbar-btn"> Мои заказы</a>
+                {% if total_quantity != 0 %}
+                <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">  В корзине {{total_quantity}} товар/товаров.</span></a>
+                {% else %}
+                <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm"></span></a>
+                {% endif %}
+            </div>
+            <!--/.nav-collapse -->
+            {% endif %}
+
+        </div>
+            </form>
+
+        </div>
+        <!--/.nav-collapse -->
+
+    </div>
+    <!-- /.container -->
+</div>
+<!-- /#navbar -->
+
+<!-- *** NAVBAR END *** -->
+    <div id="all">
+
+        <div id="content">
+            <div class="container">
+                <div class="center" id="customer-order">
+                    <div class="box">
+                        <h1>Order #1735</h1>
+
+                        <p class="lead">Заказ <strong>№{{orders.id}}</strong>, добавлен <strong> {{orders.added}}</strong></p>
+                        <hr>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Товар</th>
+                                        <th>Кол-во</th>
+                                        <th>Цена</th>
+                                        <th colspan="2">Сумма</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders.product.all %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url "detail_url" order.product.id %}">
+                                                <img src="{{order.product.image1.url}}" style="width: 50px;  height: 50px;">
+                                            </a>
+                                        </td>
+                                        <td><a href="{% url "detail_url" order.product.id %}">{{order.product.title|truncatechars:20}}</a>
+                                        </td>
+                                        <td>{{order.quantity}}</td>
+                                        <td>${{order.product.price}}</td>
+                                        <td>${{order.sum}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="4"><h3>Итог: </h3></th>
+                                        <th><h3>${{total_price}}</h3></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                        </div>
+                        <!-- /.table-responsive -->
+
+                        <div class="row addresses">
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
+                                <h2>Информация</h2>
+                                <p>{{user.first_name}} {{user.last_name}} 
+                                    <br>{{user.email}}
+                                    <br>{{user.phone}}</p>
+                                    <br>{{user.country}}, {{user.city}}
+                                    <br>{{user.street}}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- /.container -->
+        </div>
+        <!-- /#content -->
+
+
+        {% include 'include/footer.html' %} 
+    
+
+        {% endblock %}

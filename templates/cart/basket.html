@@ -1,0 +1,166 @@
+{% extends 'include/homepage.html' %}
+{% load static %}
+{% block content %}
+
+{% include 'include/header.html' %}
+
+<div class="navbar navbar-default yamm" role="navigation" id="navbar">
+    <div class="container">
+        <div class="navbar-header">
+
+            <a class="navbar-brand home" href="{% url 'home_url' %}" data-animate-hover="bounce">
+                <img hight = 20px; src="{% static 'img/logo.png' %}" alt="Obaju logo" class="hidden-xs">
+                <img src="{% static 'img/logo-small.png' %}" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
+            </a>
+            <div class="navbar-buttons">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-align-justify"></i>
+                </button>
+                <a class="btn btn-default navbar-toggle" href="basket.html">
+                    <i class="fa fa-shopping-cart"></i><span class="hidden-xs">4 items in cart</span>
+                </a>
+            </div>
+        </div>
+        <!--/.navbar-header -->
+
+        <div class="navbar-collapse collapse" id="navigation">
+
+            <ul class="nav navbar-nav navbar-left">
+                <li class="active"><a href="{% url 'home_url' %}">Главная страница</a>
+                </li>
+                <li><a href="{% url 'category_url' %}">Категории/
+                    Теги
+                </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'my_products_url' %}">Мои товары</a>
+                </li>
+                {% endif %}
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+
+        <div class="navbar-buttons">
+
+            <div class="navbar-collapse collapse right" id="basket-overview">
+                <a href="{% url 'wishlist_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-heart"></i></a>
+                <a href="{% url 'my_orders_url' %}" class="btn btn-primary navbar-btn"> Мои заказы</a>
+                {% if total_quantity != 0 %}
+                <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">  В корзине {{total_quantity}} товар/товаров.</span></a>
+                {% else %}
+                <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm"></span></a>
+                {% endif %}
+            </div>
+            <!--/.nav-collapse -->
+
+        </div>
+            </form>
+
+        </div>
+        <!--/.nav-collapse -->
+
+    </div>
+    <!-- /.container -->
+</div>
+<!-- /#navbar -->
+
+<!-- *** NAVBAR END *** -->
+
+    <div id="all">
+
+        <div id="content">
+            <div class="container">
+
+                <div class="center" id="basket">
+
+                    <div class="box">
+                        <h1>Корзина</h1>
+                        {% if carts %}
+                        
+                            <p class="text-muted">У вас есть {{total_quantity}} товар/товара/товаров в корзине.</p>
+                            <div class="table-responsive">
+                                {% comment %} {% for cartitem in cartitem %} {% endcomment %}
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2">Товар</th>
+                                            <th>Кол-во</th>
+                                            <th>обновить</th>
+                                            <th>Цена</th>
+                                            <th colspan="2">Сумма</th>
+                                        </tr>
+                                    </thead>
+                                    {% for cart in carts %}
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <a href="{% url "detail_url" cart.product.id %}">
+                                                    <img src="{{cart.product.image1.url}}" style="width: 50px;  height: 50px;">
+                                                </a>
+                                            </td>
+                                            <td><a href="{% url "detail_url" cart.product.id %}">{{cart.product.title|truncatechars:20}}</a>
+                                            </td>
+                                            <form method='POST' action="{% url 'cart_update_url' cart.id %}">
+                                                {% csrf_token %}
+                                                <td>
+                                                    <input type="number" name="quantity" value="{{cart.quantity}}" class="form-control" style="width: 80px;">
+                                                </td>
+                                                <td>
+                                                    <div class="col-md-12">
+                                                        <button name='update'  type="submit" href="{% url 'cart_update_url' cart.id %}"><i class="fa fa-refresh"></i></button>
+                                                        {% comment %} <a href="{% url 'cart_update_url' cart.pk %}" class="butn-dark2"><i class="fa fa-refresh"></i></a> {% endcomment %}
+
+                                                    </div>
+                                                </td> 
+                                            </form>
+                                            <td>{{cart.product.price}}</td>
+                                            <td>{{cart.sum}}</td>
+                                            <form method='POST' action="{% url 'cart_delete_url' cart.id %}">
+                                            {% csrf_token %}
+                                                <td><button name='delete'  type="submit" href="{% url 'cart_delete_url' cart.id %}" style='color: red;'><i class="fa fa-trash-o"></i></button>
+                                                </td>
+                                            </form>
+                                        </tr>
+                                    </tbody>
+                                    {% endfor %}
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="5">Total</th>
+                                            <th colspan="2">${{total_price}}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                
+                            </div>
+                            <!-- /.table-responsive -->
+
+                            <div class="box-footer">
+                                <div class="pull-left">
+                                    <a href="{% url 'home_url' %}" class="btn btn-default"><i class="fa fa-chevron-left"></i>Продолжить покупку.</a>
+                                </div>
+                                <div class="pull-right">
+                                    <a type="submit" href="{% url 'user_form_url' %}" class="btn btn-primary">Оформить <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% else %}
+                        <p class="lead">У вас нет товаров в корзине</p>
+                        {% endif %}
+                    </div>
+                    <!-- /.box -->
+
+
+                    
+                </div>
+                <!-- /.col-md-3 -->
+
+            </div>
+            <!-- /.container -->
+        </div>
+        <!-- /#content -->
+    
+    
+
+{% endblock %}

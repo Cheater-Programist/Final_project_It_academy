@@ -1,0 +1,173 @@
+{% extends 'include/homepage.html' %}
+{% load static %}
+{% block content %}
+
+{% include 'include/header.html' %}
+
+<div class="navbar navbar-default yamm" role="navigation" id="navbar">
+    <div class="container">
+        <div class="navbar-header">
+
+            <a class="navbar-brand home" href="{% url 'home_url' %}" data-animate-hover="bounce">
+                <img hight = 20px; src="{% static 'img/logo.png' %}" alt="Obaju logo" class="hidden-xs">
+                <img src="{% static 'img/logo-small.png' %}" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
+            </a>
+            <div class="navbar-buttons">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-align-justify"></i>
+                </button>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#search">
+                    <span class="sr-only">Toggle search</span>
+                    <i class="fa fa-search"></i>
+                </button>
+                <a class="btn btn-default navbar-toggle" href="basket.html">
+                    <i class="fa fa-shopping-cart"></i><span class="hidden-xs">{{carts.count}}</span>
+                </a>
+            </div>
+        </div>
+        <!--/.navbar-header -->
+
+        <div class="navbar-collapse collapse" id="navigation">
+
+            <ul class="nav navbar-nav navbar-left">
+                <li class="active"><a href="{% url 'home_url' %}">Главная страница</a>
+                </li>
+                <li><a href="{% url 'category_url' %}">Категории/
+                    Теги
+                </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'my_products_url' %}">Мои товары</a>
+                </li>
+                {% endif %}
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+
+        <div class="navbar-buttons">
+            {% if user.is_authenticated %}
+            <div class="navbar-collapse collapse right" id="basket-overview">
+                <a href="{% url 'wishlist_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-heart"></i></a>
+                {% if total_quantity != 0 %}
+                <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">  В корзине {{total_quantity}} товар/товаров.</span></a>
+                {% else %}
+                <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm"></span></a>
+                {% endif %}
+            </div>
+            <!--/.nav-collapse -->
+            {% endif %}
+            <div class="navbar-collapse collapse right" id="search-not-mobile">
+                <button type="button" class="btn navbar-btn btn-primary" data-toggle="collapse" data-target="#search">
+                    <span class="sr-only">Toggle search</span>
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <div class="collapse clearfix" id="search">
+
+            <form class="navbar-form" role="search" action="{% url 'home_url' %}">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name='search'>
+                    <span class="input-group-btn">
+
+        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+
+        </span>
+                </div>
+            </form>
+
+        </div>
+        <!--/.nav-collapse -->
+
+    </div>
+    <!-- /.container -->
+</div>
+<!-- /#navbar -->
+
+<!-- *** NAVBAR END *** -->
+
+    <div id="all">
+
+        <div id="content">
+            <div class="container"> 
+
+                <div class="center" id="wishlist">
+                    {% if likes %}
+
+                    <div class="box">
+                        <h1>Понравившиеся продукты.</h1>
+                        <p class="lead">У вас {{quantity}} товар/товара/товаров в wishlist</p>
+                    </div>
+
+                    <div class="row products">
+
+                        {% for like in like %}
+                        <div class="col-md-3 col-sm-4">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="{% url 'detail_url' like.product.id%}">
+                                                <img src="{{like.product.image1.url}}" style="width: 800px;  height: 200px;" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="{% url 'detail_url' like.product.id%}">
+                                                <img src="{{like.product.image2.url}}" style="width: 800px;  height: 200px;" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{% url 'detail_url' like.product.id%}" class="invisible">
+                                    <img src="{{like.product.image1.url}}" style="width: 800px;  height: 200px;" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="{% url 'detail_url' like.product.id%}">{{like.product.title}}</a></h3>
+                                    <p class="price">${{like.product.price}}</p>
+                                    <p class="buttons">
+                                        <a href="{% url 'cart_add_url' like.product.id %}" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>В корзину</a>
+                                    </p>
+                                </div>
+                                <!-- /.text -->
+                            </div>
+                            <!-- /.product -->
+                        </div>
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="pages">
+                        <ul class="pagination">
+                            {% for p in paginator.page_range %}
+                            {% if like.number == p %}
+                            <li class="active"><a href="?page={{p}}">{{p}}</a>
+                            </li>
+                            {% else %}
+                            <li><a href="?page={{p}}">{{p}}</a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- /.products -->
+                     {% else %}
+                     <div class="box">
+                        <h1>Понравившиеся продукты.</h1>
+                        <p class="lead">У вас нет товара в wishlist</p>
+                    </div>
+                     {% endif %}
+
+                </div>
+            </div>
+            <!-- /.container -->
+        </div>
+        <!-- /#content -->
+
+
+    
+
+        {% endblock %}

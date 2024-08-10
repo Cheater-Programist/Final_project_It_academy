@@ -1,0 +1,121 @@
+{% extends 'include/homepage.html' %}
+{% load static %}
+{% block content %}
+
+{% include 'include/header.html' %}
+
+<div class="navbar navbar-default yamm" role="navigation" id="navbar">
+    <div class="container">
+        <div class="navbar-header">
+
+            <a class="navbar-brand home" href="{% url 'home_url' %}" data-animate-hover="bounce">
+                <img hight = 20px; src="{% static 'img/logo.png' %}" alt="Obaju logo" class="hidden-xs">
+                <img src="{% static 'img/logo-small.png' %}" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
+            </a>
+            <div class="navbar-buttons">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-align-justify"></i>
+                </button>
+                <a class="btn btn-default navbar-toggle" href="basket.html">
+                    <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs">4 items in cart</span>
+                </a>
+            </div>
+        </div>
+        <!--/.navbar-header -->
+
+        <div class="navbar-collapse collapse" id="navigation">
+
+            <ul class="nav navbar-nav navbar-left">
+                <li class="active"><a href="{% url 'home_url' %}">Главная страница</a>
+                </li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'my_products_url' %}">Мои товары</a>
+                </li>
+                {% endif %}
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+        <!--/.nav-collapse -->
+
+    </div>
+    <!-- /.container -->
+</div>
+
+
+<div class="col-md-5 mb-30 offset-md-1">
+    <h2>Создать товар</h2>
+    <form method="POST" class="contact_form" enctype='multipart/form-data'>
+        <!-- form message -->
+        {% csrf_token %}
+        <!-- form elements -->
+        <div class="row">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="name">Название <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-control" name="title" id="name">
+                        
+                        <label for="name">Цена <span class="required">*</span>
+                        </label>
+                        <input type="number" class="form-control" name="price" id="name">
+
+                        <label for="name">1 картинка <span class="required">*</span>
+                        </label>
+                        <input type="file" class="form-control" name="image1" id="name">
+
+                        <label for="name">2 картинка <span class="required">*</span>
+                        </label>
+                        <input type="file" class="form-control" name="image2" id="name">
+
+                        <label>3 картинка <span class="required">*</span>
+                        </label>
+                        <input type="file" class="form-control" name="image3" id="name">
+
+                        <label for="name">Категория <span class="required">*</span>
+                        </label>
+                        <select multiple name="category">
+                            {% for category in category %}
+                            <option value="{{category.id}}">{{category.title}}</option>
+                            {% endfor %}
+                        </select>
+
+                        <label for="name">Тег <span class="required">*</span>
+                        </label>
+                        <select multiple name="tag">
+                            {% for tag in tag %}
+                            <option value="{{tag.id}}">{{tag.title}}</option>
+                            {% endfor %}
+                        </select>
+
+                        <label for="name">Описание <span class="required">*</span>
+                        </label>
+                        <textarea class="form-control" name="description" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+            {% comment %} <div class="col-md-6 form-group">
+                <input name="email" type="email" placeholder="Email">
+            </div>
+            <div class="col-md-6 form-group">
+                <input name="phone" type="text" placeholder="Номер Телефона"
+            </div>
+            <div class="col-md-6 form-group">
+                <input name="theme" type="text" placeholder="Тема">
+            </div>
+            <div class="col-md-12 form-group">
+                <textarea name="message" id="message" cols="30" rows="4" placeholder="Сообщение"></textarea> {% endcomment %}
+            {% comment %} </div> {% endcomment %}
+            <div class="col-md-12">
+                <button type="submit" class="butn-dark2"><span>Создать</span></button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+    
+
+{% endblock %}

@@ -1,0 +1,278 @@
+{% extends 'include/homepage.html' %}
+{% load static %}
+{% block content %}
+
+{% include 'include/header.html' %}
+
+<div class="navbar navbar-default yamm" role="navigation" id="navbar">
+    <div class="container">
+        <div class="navbar-header">
+
+            <a class="navbar-brand home" href="{% url 'home_url' %}" data-animate-hover="bounce">
+                <img hight = 20px; src="{% static 'img/logo.png' %}" alt="Obaju logo" class="hidden-xs">
+                <img src="{% static 'img/logo-small.png' %}" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
+            </a>
+            <div class="navbar-buttons">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-align-justify"></i>
+                </button>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#search">
+                    <span class="sr-only">Toggle search</span>
+                    <i class="fa fa-search"></i>
+                </button>
+                <a class="btn btn-default navbar-toggle" href="basket.html">
+                    <i class="fa fa-shopping-cart"></i><span class="hidden-xs">{{carts.count}}</span>
+                </a>
+            </div>
+        </div>
+        <!--/.navbar-header -->
+
+        <div class="navbar-collapse collapse" id="navigation">
+
+            <ul class="nav navbar-nav navbar-left">
+                <li class="active"><a href="{% url 'home_url' %}">Главная страница</a>
+                </li>
+                <li><a href="{% url 'category_url' %}">Категории/
+                    Теги
+                </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'my_products_url' %}">Мои товары</a>
+                </li>
+                {% endif %}
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+
+        <div class="navbar-buttons">
+            {% if user.is_authenticated %}
+            <div class="navbar-collapse collapse right" id="basket-overview">
+                <a href="{% url 'wishlist_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-heart"></i></a>
+                {% if total_quantity != 0 %}
+                <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">  В корзине {{total_quantity}} товар/товаров.</span></a>
+                {% else %}
+                <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm"></span></a>
+                {% endif %}
+            </div>
+            <!--/.nav-collapse -->
+            {% endif %}
+            <div class="navbar-collapse collapse right" id="search-not-mobile">
+                <button type="button" class="btn navbar-btn btn-primary" data-toggle="collapse" data-target="#search">
+                    <span class="sr-only">Toggle search</span>
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <div class="collapse clearfix" id="search">
+
+            <form class="navbar-form" role="search" action="{% url 'home_url' %}">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name='search'>
+                    <span class="input-group-btn">
+
+        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+
+        </span>
+                </div>
+            </form>
+
+        </div>
+        <!--/.nav-collapse -->
+
+    </div>
+    <!-- /.container -->
+</div>
+<!-- /#navbar -->
+
+<!-- *** NAVBAR END *** -->
+    <div id="all">
+
+        <div id="content">
+            <div class="container">
+
+                <div class="col-md-3">
+                    <!-- *** MENUS AND FILTERS ***
+ _________________________________________________________ -->
+                    <div class="panel panel-default sidebar-menu">
+
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Категории</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <ul class="nav nav-pills nav-stacked category-menu">
+                                <li class="active">
+                                    {% for category in product_by_id.category.all|dictsort:'title' %}
+                                    <ul>
+                                        <li><a href="{% url 'detail_category_id_url' category.id %}">{{category}}</a>
+                                        </li>
+                                    </ul>
+                                    {% endfor %}
+                                </li>
+
+                            </ul>
+
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default sidebar-menu">
+
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Теги</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <ul class="nav nav-pills nav-stacked category-menu">
+                                <li class="active">
+                                    {% for tag in product_by_id.tag.all|dictsort:'title' %}
+                                    <ul>
+                                        <li><a href="{% url 'detail_tag_id_url' tag.id %}">{{tag}}</a>
+                                        </li>
+                                    </ul>
+                                    {% endfor %}
+                                </li>
+
+                            </ul>
+
+                        </div>
+                    </div>
+
+                    <!-- *** MENUS AND FILTERS END *** -->
+                </div>
+
+                <div class="col-md-9">
+                    <div class="row" id="productMain">
+                        <div class="col-sm-6">
+                            <div id="mainImage">
+                                <img src="{{product_by_id.image1.url}}" style="width: 400px;  height: 400px;" alt="" class="img-responsive">
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div style='width=500px;' class="box">
+                                <h5 class="text-center">{{product_by_id.user}}</h5>
+                                <hr>
+                                <h5 class="text-center">{{product_by_id.title}}</h5>
+                                <hr>
+                                <p class="price">${{product_by_id.price}}</p>
+
+                                {% if user.is_authenticated %}
+                                <p class="text-center buttons">
+                                    {% if product_by_id.user.id == user.id %}
+                                        <a class="btn btn-primary" href="{% url 'update_product_url' product_by_id.pk%}"><i class="fas fa-sync-alt"></i> Изменить</a>
+                                        <a class="btn btn-primary" href="{% url 'delete_product_url' product_by_id.id%}"><i class="fas fa-trash"></i> Удалить</a>
+                                    {% else %}
+                                        <form method="POST">
+                                            <hr>
+                                            <input type="number" style="width: 70px;" class="form-control" name="quantity" value="1"><br>
+                                            <button name='cart' class="btn btn-primary"><i class="fa fa-shopping-cart"></i>В корзину</button>
+
+                                            <a href="{% url 'wishlist_add_url' product_by_id.id %}" class="btn btn-primary"><i class="fa fa-heart"></i></a>
+                                        </from> 
+                                    {% endif %}
+                                </p>
+                                {% endif %}
+
+
+                            </div>
+
+                            <div class="row" id="thumbs">
+                                <div class="col-xs-4">
+                                    <a href="{{product_by_id.image1.url}}" class="thumb">
+                                        <img src="{{product_by_id.image1.url}}" style="width: 200px;  height: 100px;" alt="" class="img-responsive">
+                                    </a>
+                                </div>
+                                <div class="col-xs-4">
+                                    <a href="{{product_by_id.image2.url}}" class="thumb">
+                                        <img src="{{product_by_id.image2.url}}" style="width: 200px;  height: 100px;" alt="" class="img-responsive">
+                                    </a>
+                                </div>
+                                <div class="col-xs-4">
+                                    <a href="{{product_by_id.image3.url}}" class="thumb">
+                                        <img src="{{product_by_id.image3.url}}" style="width: 200px;  height: 100px;" alt="" class="img-responsive">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="box" id="details">
+                        <p>
+
+                            <blockquote>
+                                <p><em>{{product_by_id.description}}</em>
+                                </p>
+                            </blockquote>
+
+                            <hr>
+                            <div id="comments" data-animate="fadeInUp">
+                                <h4>{{comments.count}} Коментарий</h4>
+                                <hr>
+                                <div class="row comment">
+                                    {% for comment in comments %}
+                                    <div class="col-sm-9 col-md-10"> 
+                                            <h5>{{comment.user}}</h5>
+                                            <p class="posted"><i class="fa fa-clock-o"></i> {{comment.added}}</p>
+                                            <p>{{comment.text}}</p>
+                                            <hr>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <!-- /.comment -->
+    
+                            </div>
+                            <!-- /#comments -->
+                            
+                            {% if user.is_authenticated %}
+                            <div id="comment-form" data-animate="fadeInUp">
+    
+                                <h4>Оставьте коментарий</h4>
+    
+                                <form method='POST' id='commentId'>
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label for="comment">Коментарий <span class="required">*</span>
+                                                </label>
+                                                <textarea name='text' class="form-control" id="contactcomment" rows="4"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                    <div class="row">
+                                        <div class="col-sm-12 text-right">
+                                            <button name='comment' class="btn btn-primary"><i class="fa fa-comment-o"></i>Отправить</button>
+                                        </div>
+                                    </div>
+    
+    
+                                </form>
+    
+                            </div>
+                            {% endif %}
+                    </div>
+
+                </div>
+                <!-- /.col-md-9 -->
+            </div>
+            <!-- /.container -->
+        </div>
+
+        {% comment %} <script>
+            function addComment(name, id){
+                document.getElementById("contactparent").value = id;
+                document.getElementById("contactcomment").innerText = name + ', '
+            }
+        </script> {% endcomment %}
+        <!-- /#content -->
+    {% include 'include/footer.html' %} 
+    
+
+{% endblock %}

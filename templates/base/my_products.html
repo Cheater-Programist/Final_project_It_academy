@@ -1,0 +1,149 @@
+{% extends 'include/homepage.html' %}
+{% load static %}
+{% block content %}
+
+{% include 'include/header.html' %}
+
+<div class="navbar navbar-default yamm" role="navigation" id="navbar">
+    <div class="container">
+        <div class="navbar-header">
+
+            <a class="navbar-brand home" href="{% url 'home_url' %}" data-animate-hover="bounce">
+                <img hight = 20px; src="{% static 'img/logo.png' %}" alt="Obaju logo" class="hidden-xs">
+                <img src="{% static 'img/logo-small.png' %}" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
+            </a>
+            <div class="navbar-buttons">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-align-justify"></i>
+                </button>
+                </button>
+                <a class="btn btn-default navbar-toggle" href="basket.html">
+                    <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs">4 items in cart</span>
+                </a>
+            </div>
+        </div>
+        <!--/.navbar-header -->
+
+        <div class="navbar-collapse collapse" id="navigation">
+
+            <ul class="nav navbar-nav navbar-left">
+                <li class="active"><a href="{% url 'home_url' %}">Главная страница</a>
+                </li>
+                <li><a href="{% url 'category_url' %}">Категории/
+                    Теги
+                </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'create_product_url' %}">Добавить товар</a>
+                </li>
+                {% endif %}
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+
+        <div class="navbar-buttons">
+            {% if user.is_authenticated %}
+            <div class="navbar-collapse collapse right" id="basket-overview">
+                <a href="{% url 'wishlist_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-heart"></i></a>
+                {% if total_quantity != 0 %}
+                <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">  В корзине {{total_quantity}} товар/товаров.</span></a>
+                {% else %}
+                <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm"></span></a>
+                {% endif %}
+            </div>
+            {% endif %}
+            <!--/.nav-collapse -->
+        </div>
+
+        </span>
+                </div>
+            </form>
+
+        </div>
+        <!--/.nav-collapse -->
+
+    </div>
+    <!-- /.container -->
+</div>
+<!-- /#navbar -->
+
+<!-- *** NAVBAR END *** -->
+
+    <div id="all">
+
+        <div id="content">
+
+            <div class="container">
+
+                <div class="col-md-12">
+                    {% if products %}
+
+                    <div class="box">
+                        <h1>Мои продукты.</h1>
+                        <p class="lead">У вас {{product_quantity}} товар/товара/товаров</p>
+                    </div>
+
+                    <div class="row products">
+                        {% for product in product %}
+                        <div class="col-md-3 col-sm-4">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="{% url "detail_url" product.id %}">
+                                                <img src="{{ product.image1.url }}" style="width: 800px;  height: 200px;"  alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="{% url "detail_url" product.id %}">
+                                                <img src="{{ product.image2.url}}" style="width: 800px;  height: 200px;" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{% url "detail_url" product.id %}" class="invisible">
+                                    <img src="{{ product.image1.url }}" style="width: 800px;  height: 200px;" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="{% url "detail_url" product.id %}">{{product.title}}</a></h3>
+                                    <p class="price">${{product.price}}</p>
+                                </div> 
+                            </div>
+                            <!-- /.product -->
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <!-- /.products -->
+
+                    <div class="pages">
+                        <ul class="pagination">
+                            {% for p in paginator.page_range %}
+                            {% if product.number == p %}
+                            <li class="active"><a href="?page={{p}}">{{p}}</a>
+                            </li>
+                            {% else %}
+                            <li><a href="?page={{p}}">{{p}}</a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    {% else %}
+                    <div class="box">
+                        <h1>Мои продукты.</h1>
+                        <p class="lead">У вас нет товаров</p>
+                    </div>
+                    {% endif %}
+
+                </div>
+                <!-- /.col-md-9 -->
+
+            </div>
+            <!-- /.container -->
+        </div>
+        <!-- /#content -->
+
+        {% endblock %}

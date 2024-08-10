@@ -1,0 +1,251 @@
+{% extends 'include/homepage.html' %}
+{% load static %}
+{% block content %}
+
+{% include 'include/header.html' %}
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+        <div class="container">
+            <div class="navbar-header">
+
+                <a class="navbar-brand home" href="{% url 'home_url' %}" data-animate-hover="bounce">
+                    <img src="{% static 'img/logo.png' %}" alt="Obaju logo" class="hidden-xs">
+                    <img src="{% static 'img/logo-small.png' %}" alt="Obaju logo" class="visible-xs"><span class="sr-only">Obaju - go to homepage</span>
+                </a>
+                <div class="navbar-buttons">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
+                        <span class="sr-only">Toggle navigation</span>
+                        <i class="fa fa-align-justify"></i>
+                    </button>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#search">
+                        <span class="sr-only">Toggle search</span>
+                        <i class="fa fa-search"></i>
+                    </button>
+                    <a class="btn btn-default navbar-toggle" href="basket.html">
+                        <i class="fa fa-shopping-cart"></i>  <span class="hidden-xs">3 items in cart</span>
+                    </a>
+                </div>
+            </div>
+            <!--/.navbar-header -->
+
+            <div class="navbar-collapse collapse" id="navigation">
+
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="active"><a href="{% url 'home_url' %}">Главная страница</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'create_category_url' %}">Добавить категорию</a>
+                    </li>
+                    <li><a href="{% url 'create_tag_url' %}">Добавить тег</a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+            </div>
+            <!--/.nav-collapse -->
+
+            <div class="navbar-buttons">
+                {% if user.is_authenticated %}
+                <div class="navbar-collapse collapse right" id="basket-overview">
+                    <a href="{% url 'wishlist_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-heart"></i></a>
+                    {% if total_quantity != 0 %}
+                    <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm">  В корзине {{total_quantity}} товар/товаров.</span></a>
+                    {% else %}
+                    <a href="{% url 'cart_url' %}" class="btn btn-primary navbar-btn"><i class="fa fa-shopping-cart"></i><span class="hidden-sm"></span></a>
+                    {% endif %}
+                </div>
+                <!--/.nav-collapse -->
+                {% endif %}
+                <div class="navbar-collapse collapse right" id="search-not-mobile">
+                    <button type="button" class="btn navbar-btn btn-primary" data-toggle="collapse" data-target="#search">
+                        <span class="sr-only">Toggle search</span>
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="collapse clearfix" id="search">
+
+                <form class="navbar-form" role="search" action="{% url 'home_url' %}">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name='search'>
+                        <span class="input-group-btn">
+    
+            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+    
+            </span>
+                    </div>
+                </form>
+    
+            </div>
+            <!--/.nav-collapse -->
+
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /#navbar -->
+
+    <!-- *** NAVBAR END *** -->
+
+    <div id="all">
+
+        <div id="content">
+            <div class="container">
+                <div class="col-md-3">
+
+                    <div class="panel panel-default sidebar-menu">
+
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Категории</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <ul class="nav nav-pills nav-stacked category-menu">
+                                <li class="active">
+                                    <ul>
+                                        <li><a href="{% url 'category_url' %}">Все</a>
+                                        </li>
+                                        {% for category in category|dictsort:'title' %}
+                                        <li><a href="{% url 'category_id_url' category.id %}">{{category.title}}</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+
+                            </ul>
+
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default sidebar-menu">
+
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Теги</h3>
+                        </div>
+
+                        <div class="panel-body">
+                            <ul class="nav nav-pills nav-stacked category-menu">
+                                <li class="active">
+                                    <ul>
+                                        <li><a href="{% url 'category_url' %}">Все</a>
+                                        </li>
+                                        {% for tag in tag %}
+                                        <li><a href="{% url 'tag_id_url' tag.id %}">{{tag.title}}</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+
+                            </ul>
+
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default sidebar-menu">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Цены</h3>
+                        </div>
+                        <div class="panel-body">
+                            <ul class="nav nav-pills nav-stacked category-menu">
+                                <li>
+                                    <ul>
+                                        <form method='POST' class="form-inline">
+                                            {% csrf_token %}
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <strong>От:</strong>
+                                                            <input type="text" name="min_price" class="form-control" id="name">
+                                                            <hr>
+                                                            <strong>До:</strong>
+                                                            <input type="text" name="max_price" class="form-control" id="name">
+                                                        </div>
+                                                        <hr>
+                                                        <div class="col-md-12">
+                                                            <button type="submit" class="btn-form1-submit mt-15">Фильтровать</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </ul>
+                                </li>
+
+                            </ul>
+
+                        </div>
+                    </div>
+
+
+                    <!-- *** MENUS AND FILTERS END *** -->
+                </div>
+
+                <div class="col-md-9">
+                    <div class="row products">
+                        {% for product in product %}
+                        <div class="col-md-4 col-sm-6">
+                            <div class="product">
+                                <div class="flip-container">
+                                    <div class="flipper">
+                                        <div class="front">
+                                            <a href="{% url "detail_url" product.id %}">
+                                                <img src="{{ product.image1.url }}" style="width: 800px;  height: 200px;"  alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="{% url "detail_url" product.id %}">
+                                                <img src="{{ product.image2.url}}" style="width: 800px;  height: 200px;" alt="" class="img-responsive">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{% url "detail_url" product.id %}" class="invisible">
+                                    <img src="{{ product.image1.url }}" style="width: 800px;  height: 200px;" alt="" class="img-responsive">
+                                </a>
+                                <div class="text">
+                                    <h3><a href="{% url "detail_url" product.id %}">{{product.title}}</a></h3>
+                                    <p class="price">${{product.price}}</p>
+                                    {% if user.is_authenticated %}
+                                    <p class="buttons">
+                                        {% if product.user.id != user.id %}
+                                        <a href="{% url 'cart_add_url' product.id %}" class="btn btn-primary"><i class="fa fa-shopping-cart"></i>В корзину</a>
+                                        <a href="{% url 'wishlist_add_url' product.id %}" class="btn btn-primary"><i class="fa fa-heart"></i></a>
+                                        {% endif %}
+                                    </p>
+                                    {% endif %}
+                                </div> 
+                            </div>
+                            <!-- /.product -->
+                        </div>
+                        {% endfor %}
+                        <!-- /.col-md-4 -->
+                    </div>
+                    <!-- /.products -->
+
+                    <div class="pages">
+                        <ul class="pagination">
+                            {% for p in paginator.page_range %}
+                            {% if product.number == p %}
+                            <li class="active"><a href="?page={{p}}">{{p}}</a>
+                            </li>
+                            {% else %}
+                            <li><a href="?page={{p}}">{{p}}</a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+
+                </div>
+                <!-- /.col-md-9 -->
+            </div>
+            <!-- /.container -->
+        </div>
+        <!-- /#content -->
+
+    
+
+        {% endblock %}

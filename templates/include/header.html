@@ -1,0 +1,31 @@
+{% load static %}
+
+    <!-- *** TOPBAR ***
+ _________________________________________________________ -->
+ <div id="top">
+    <div class="container">
+        <div class="col-md-6 offer" data-animate="fadeInDown">
+        </div>
+        <div class="col-md-6" data-animate="fadeInDown">
+            <ul class="menu">
+                {% if user.is_authenticated %}
+                <li style="color: white;">{{user.username}}</li>
+                <li><a href="{% url 'account_logout' %}">Выход</a>
+                </li>
+                {% else %}
+                <li><a href="{% url 'account_login' %}">Вход</a>
+                </li>
+                <li><a href="{% url 'account_signup' %}">Регистрациюя</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<!-- *** TOP BAR END *** -->
+
+<!-- *** NAVBAR ***
+_________________________________________________________ -->
+
