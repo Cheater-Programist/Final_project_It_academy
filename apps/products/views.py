@@ -75,8 +75,9 @@ def detail(request, id=None, comment_id=None):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         if 'cart' in request.POST:
+            Cart.objects.get_or_create(user_id=request.user.id)
             carts = CartItem.objects.filter(cart__user=request.user, product__id=product_by_id.id, status=True)
-            user_cart = Cart.objects.get_or_create(user_id=request.user.id)
+            user_cart = Cart.objects.get(user_id=request.user.id)
             quant = request.POST.get('quantity')
             
             if not carts.exists():
